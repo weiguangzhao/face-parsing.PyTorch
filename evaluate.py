@@ -63,7 +63,7 @@ def evaluate(respth='./res/test_res', dspth='./datasets/CelebAMask-HQ/test-img',
 
     to_tensor = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ])
     with torch.no_grad():
         for image_path in os.listdir(dspth):
