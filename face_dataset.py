@@ -17,7 +17,7 @@ from transform import *
 
 
 class FaceMask(Dataset):
-    def __init__(self, rootpth, cropsize=(640, 480), mode='train', *args, **kwargs):
+    def __init__(self, rootpth, cropsize=(224, 224), mode='train', *args, **kwargs):
         super(FaceMask, self).__init__(*args, **kwargs)
         assert mode in ('train', 'val', 'test')
         self.mode = mode
@@ -25,7 +25,6 @@ class FaceMask(Dataset):
         self.rootpth = rootpth
 
         self.imgs = os.listdir(os.path.join(self.rootpth, 'CelebA-HQ-img'))
-
         #  pre-processing
         self.to_tensor = transforms.Compose([
             transforms.ToTensor(),
@@ -44,7 +43,7 @@ class FaceMask(Dataset):
     def __getitem__(self, idx):
         impth = self.imgs[idx]
         img = Image.open(osp.join(self.rootpth, 'CelebA-HQ-img', impth))
-        img = img.resize((512, 512), Image.BILINEAR)
+        img = img.resize((224, 224), Image.BILINEAR)
         label = Image.open(osp.join(self.rootpth, 'mask', impth[:-3]+'png')).convert('P')
         # print(np.unique(np.array(label)))
         if self.mode == 'train':

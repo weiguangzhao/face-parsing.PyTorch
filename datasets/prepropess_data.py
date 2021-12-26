@@ -7,9 +7,9 @@ import cv2
 from transform import *
 from PIL import Image
 
-face_data = '/home/zll/data/CelebAMask-HQ/CelebA-HQ-img'
-face_sep_mask = '/home/zll/data/CelebAMask-HQ/CelebAMask-HQ-mask-anno'
-mask_path = '/home/zll/data/CelebAMask-HQ/mask'
+face_data = './CelebAMask-HQ/CelebA-HQ-img'
+face_sep_mask = './CelebAMask-HQ/CelebAMask-HQ-mask-anno'
+mask_path = './CelebAMask-HQ/mask'
 counter = 0
 total = 0
 for i in range(15):
@@ -33,6 +33,7 @@ for i in range(15):
 
                 mask[sep_mask == 225] = l
         cv2.imwrite('{}/{}.png'.format(mask_path, j), mask)
+        # print(np.unique(mask))
         print(j)
 
 print(counter, total)

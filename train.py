@@ -7,13 +7,10 @@ from face_dataset import FaceMask
 from loss import OhemCELoss
 from evaluate import evaluate
 from optimizer import Optimizer
-import cv2
-import numpy as np
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
 import torch.distributed as dist
 
 import os
@@ -46,7 +43,7 @@ def train():
     torch.cuda.set_device(args.local_rank)
     dist.init_process_group(
                 backend = 'nccl',
-                init_method = 'tcp://127.0.0.1:33241',
+                init_method = 'tcp://127.0.0.1:33221',
                 world_size = torch.cuda.device_count(),
                 rank=args.local_rank
                 )
@@ -54,10 +51,10 @@ def train():
 
     # dataset
     n_classes = 19
-    n_img_per_gpu = 16
-    n_workers = 8
-    cropsize = [448, 448]
-    data_root = '/home/zll/data/CelebAMask-HQ/'
+    n_img_per_gpu = 64
+    n_workers = 4
+    cropsize = [224, 224]
+    data_root = './datasets/CelebAMask-HQ/'
 
     ds = FaceMask(data_root, cropsize=cropsize, mode='train')
     sampler = torch.utils.data.distributed.DistributedSampler(ds)
@@ -160,11 +157,11 @@ def train():
             loss_avg = []
             st = ed
         if dist.get_rank() == 0:
-            if (it+1) % 5000 == 0:
+            if (it+1) % 500 == 0:
                 state = net.module.state_dict() if hasattr(net, 'module') else net.state_dict()
                 if dist.get_rank() == 0:
                     torch.save(state, './res/cp/{}_iter.pth'.format(it))
-                evaluate(dspth='/home/zll/data/CelebAMask-HQ/test-img', cp='{}_iter.pth'.format(it))
+                evaluate(dspth='./datasets/CelebAMask-HQ/test-img', cp='{}_iter.pth'.format(it))
 
     #  dump the final model
     save_pth = osp.join(respth, 'model_final_diss.pth')
@@ -176,4 +173,5 @@ def train():
 
 
 if __name__ == "__main__":
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
     train()
