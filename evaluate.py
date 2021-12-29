@@ -14,7 +14,6 @@ import torchvision.transforms as transforms
 import cv2
 
 
-
 def vis_parsing_maps(im, parsing_anno, stride, save_im=False, save_path='vis_results/parsing_map_on_im.jpg'):
     # Colors for all 20 parts
     part_colors = [[255, 0, 0], [255, 85, 0], [255, 170, 0],
@@ -49,12 +48,13 @@ def vis_parsing_maps(im, parsing_anno, stride, save_im=False, save_path='vis_res
 
     # return vis_im
 
+
 def evaluate(respth='./res/test_res', dspth='./datasets/CelebAMask-HQ/test-img', cp='79999_iter.pth'):
 
     if not os.path.exists(respth):
         os.makedirs(respth)
 
-    n_classes = 19
+    n_classes = 10
     net = BiSeNet(n_classes=n_classes)
     net.cuda()
     save_pth = osp.join('res/cp', cp)

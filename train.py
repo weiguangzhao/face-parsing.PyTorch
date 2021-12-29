@@ -43,14 +43,14 @@ def train():
     torch.cuda.set_device(args.local_rank)
     dist.init_process_group(
                 backend = 'nccl',
-                init_method = 'tcp://127.0.0.1:33221',
+                init_method = 'tcp://127.0.0.1:22221',
                 world_size = torch.cuda.device_count(),
                 rank=args.local_rank
                 )
     setup_logger(respth)
 
     # dataset
-    n_classes = 19
+    n_classes = 10
     n_img_per_gpu = 64
     n_workers = 4
     cropsize = [224, 224]
@@ -173,5 +173,5 @@ def train():
 
 
 if __name__ == "__main__":
-    os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '1, 5'
     train()
